@@ -1,0 +1,5 @@
+/build
+/dist
+/driftshelf.code-workspace
+/main.spec
+/__pycache__
