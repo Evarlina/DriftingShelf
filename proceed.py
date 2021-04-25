@@ -8,7 +8,8 @@ import xlwings as xw
 class SheetOperation:
 
     def __init__(self):
-
+        """ Create class variables.
+        """
         # Open the working sheets.
         print('打开表格...', end='  ')
         self.app = xw.App(visible=True, add_book=False)
@@ -27,6 +28,8 @@ class SheetOperation:
         self.category_dic = {}
 
     def load_json(self):
+        """ Load json file.
+        """
         print('加载json...', end='  ')
         with open('./category.json', 'r', encoding='utf-8') as fr:
             self.category_dic = json.load(fr)
@@ -106,7 +109,7 @@ class SheetOperation:
         # Print lvl2 categories currently available.
         print('-' * 40)
         print('请选择二级类别：')
-        detail_list = self.category_dic[list(enumerate(category_dic))[
+        detail_list = self.category_dic[list(enumerate(self.category_dic))[
             chief_cat - 1][1]]
         for item in detail_list:
             print(item)
@@ -159,7 +162,7 @@ class SheetOperation:
             self.alert_on_quit()
         return comment
 
-    def loop(self):
+    def start_loop(self):
         """ Main loop where data is get and stored.
         """
         # State certain variables.
@@ -174,12 +177,12 @@ class SheetOperation:
         while not quit:
 
             # Get book data.
-            title = handle_title()
-            author = handle_author()
-            category, bookid = handle_identifier(self.category_dic)
+            title = self.handle_title()
+            author = self.handle_author()
+            category, bookid = self.handle_identifier()
             pre_donor = donor
-            donor = handle_donor()
-            comment = handle_comment()
+            donor = self.handle_donor()
+            comment = self.handle_comment()
 
             # Add to bookinfo sheet.
             self.bookinfo_sheet.range(f'A{bookinfo_cursor}').value = [
@@ -235,3 +238,10 @@ class SheetOperation:
         self.wb.save()
         self.wb.close()
         self.app.quit()
+
+
+if __name__ == '__main__':
+    opr = SheetOperation()
+    opr.load_json()
+    opr.start_loop()
+    opr.close()
