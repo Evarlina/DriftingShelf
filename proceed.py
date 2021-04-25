@@ -14,8 +14,8 @@ class SheetOperation:
         # Open the working sheets.
         print('打开表格...', end='  ')
         self.app = xw.App(visible=True, add_book=False)
-        app.display_alerts = False
-        app.screen_updating = False
+        self.app.display_alerts = False
+        self.app.screen_updating = False
         self.bookinfo_wb = self.app.books.open('./书籍信息.xlsx')
         self.proof_wb = self.app.books.open('./捐赠证明.xlsx')
 
