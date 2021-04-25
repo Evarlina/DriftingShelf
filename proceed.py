@@ -15,14 +15,15 @@ class SheetOperation:
         self.app = xw.App(visible=True, add_book=False)
         # app.display_alerts = False
         # app.screen_updating = False
-        self.wb = self.app.books.open('./漂流书架.xlsx')
+        self.bookinfo_wb = self.app.books.open('./书籍信息.xlsx')
+        self.proof_wb = self.app.books.open('./捐赠证明.xlsx')
 
         # Open bookinfo sheet.
-        self.bookinfo_sheet = self.wb.sheets[0]
+        self.bookinfo_sheet = self.bookinfo_wb.sheets[0]
         self.bookinfo_sheet.range('A2').expand().api.Delete()
 
         # Open proof sheet.
-        self.proof_sheet = self.wb.sheets[1]
+        self.proof_sheet = self.proof_wb.sheets[0]
 
         # Dictionary where category info is stored.
         self.category_dic = {}
@@ -31,7 +32,7 @@ class SheetOperation:
         """ Load json file.
         """
         print('加载json...', end='  ')
-        with open('./category.json', 'r', encoding='utf-8') as fr:
+        with open('./rsc/category.json', 'r', encoding='utf-8') as fr:
             self.category_dic = json.load(fr)
 
     def alert_on_quit(self):
@@ -247,10 +248,17 @@ class SheetOperation:
     def close(self):
         """ To save and quit program.
         """
+        # Close bookinfo sheet.
         self.bookinfo_sheet.autofit()
+        self.bookinfo_wb.save()
+        self.bookinfo_wb.close()
+
+        # Close bookinfo sheet.
         self.proof_sheet.autofit()
-        self.wb.save()
-        self.wb.close()
+        self.proof_wb.save()
+        self.proof_wb.close()
+
+        # Quit app.
         self.app.quit()
 
 
