@@ -1,4 +1,4 @@
-import json
+from json import load
 from re import findall
 from string import ascii_lowercase, ascii_uppercase
 from sys import exit
@@ -11,43 +11,51 @@ class SheetOperation:
     def __init__(self):
         """ Create class variables.
         """
-        # Open the working sheets.
+        # Create app and configure.
         print('打开表格...', end='  ')
-        self.app = xw.App(visible=True, add_book=False)
+        self.app = xw.App(visible=False, add_book=False)
         self.app.display_alerts = False
         self.app.screen_updating = False
+
+        # Open two workbooks.
         self.bookinfo_wb = self.app.books.open('./书籍信息.xlsx')
         self.proof_wb = self.app.books.open('./捐赠证明.xlsx')
 
-        # Open bookinfo sheet.
+        # Open bookinfo sheet and clear.
         self.bookinfo_sheet = self.bookinfo_wb.sheets[0]
         self.bookinfo_sheet.range('A2').expand().api.Delete()
 
-        # Open proof sheet.
+        # Open proof sheet and clear.
         self.proof_sheet = self.proof_wb.sheets[0]
+        self.proof_sheet.range('A2').expand().api.Delete()
+        self.proof_sheet.range('A:A').api.NumberFormat = '@'
 
         # Dictionary where category info is stored.
         self.category_dic = {}
 
     def load_json(self):
-        """ Load json file.
+        """ Load "category.json".
         """
         print('加载json...', end='  ')
         with open('./rsc/category.json', 'r', encoding='utf-8') as fr:
-            self.category_dic = json.load(fr)
+            self.category_dic = load(fr)
 
     def alert_on_quit(self):
         """ Remind user before quit too early.
         """
         # HCI part.
-        print('-' * 40)
+        print('-' * 60)
         will_quit = input('提前退出会导致当前行信息丢失，确定退出？(y/n)\n>> ').strip()
+
+        # If no response, keep asking.
+        while will_quit == '':
+            will_quit = input('>> ').strip()
 
         # If the input is neither 'y' nor 'n', re-input.
         while will_quit not in ['y', 'n']:
             will_quit = input('输入错误，请重新选择！\n>> ').strip()
 
-        # If about to quit, save the workbook, and exit with code 1.
+        # If yes, save the workbook, and exit with code 1.
         if will_quit == 'y':
             self.close()
             exit(1)
@@ -56,8 +64,10 @@ class SheetOperation:
         """ Get title info.
         """
         # HCI part.
-        print('-' * 40)
-        title = input('请输入书籍名（不带书名号）：\n>> ').strip()
+        print('-' * 60)
+        title = input('请输入书籍名：\n>> ').strip()
+
+        # If no response, keep asking.
         while title == '':
             title = input('>> ').strip()
 
@@ -66,14 +76,18 @@ class SheetOperation:
             self.alert_on_quit()
 
         # Process input.
-        title = '《' + title + '》'
+        if title.find('《') == -1:
+            title = '《' + title
+        if title.find('》') == -1:
+            title = title + '》'
+
         return title
 
     def handle_author(self):
         """ Get author info.
         """
         # HCI part.
-        print('-' * 40)
+        print('-' * 60)
         author_list = input('请输入作者名，多个作者以空格分隔：\n>> ').strip()
         while author_list == '':
             author_list = input('>> ').strip()
@@ -93,7 +107,7 @@ class SheetOperation:
         # HCI part.
 
         # Print lvl1 categories currently available.
-        print('-' * 40)
+        print('-' * 60)
         print('请选择一级类别：')
         for item in list(self.category_dic.keys()):
             print(item, end='\t')
@@ -115,7 +129,7 @@ class SheetOperation:
         # HCI part.
 
         # Print lvl2 categories currently available.
-        print('-' * 40)
+        print('-' * 60)
         print('请选择二级类别：')
         detail_list = self.category_dic[list(enumerate(self.category_dic))[
             chief_cat - 1][1]]
@@ -140,7 +154,7 @@ class SheetOperation:
         cat_fin = findall(r'\d+::(.*)', detail_list[second_cat - 1])[0]
 
         # HCI part.
-        print('-' * 40)
+        print('-' * 60)
         serial_no = input(f'该书的编号前缀为{identifier}，请输入它在该类中的数字编号：\n>> ').strip()
         while serial_no == '':
             serial_no = input('>> ').strip()
@@ -154,7 +168,7 @@ class SheetOperation:
         """ Get donor info.
         """
         # HCI part.
-        print('-' * 40)
+        print('-' * 60)
         donor = input('请输入捐赠者姓名：\n>> ').strip()
         while donor == '':
             donor = input('>> ').strip()
@@ -168,7 +182,7 @@ class SheetOperation:
         """ Get comment info.
         """
         # HCI part.
-        print('-' * 40)
+        print('-' * 60)
         comment = input('请输入捐赠留言：\n>> ').strip()
         while comment == '':
             comment = input('>> ').strip()
@@ -183,12 +197,21 @@ class SheetOperation:
         """
         # State certain variables.
         bookinfo_cursor = 2
-        proof_cursor = self.proof_sheet.range(
-            'A1').expand('down').last_cell.row + 1
+        proof_cursor = 2
         donor = ''
 
-        # Start loop.
+        # Start to read in data.
         print('开始读入信息。')
+
+        # Determine starting index of proof.
+        proof_delta = input('请输入本次的起始捐赠证明编号：\n>> ').strip()
+        while proof_delta == '':
+            proof_delta = input('>> ').strip()
+        if proof_delta == 'quit':
+            self.alert_on_quit()
+        proof_delta = int(findall('0*(\d+)', proof_delta)[0]) - proof_cursor
+
+        # Start loop.
         quit = False
         while not quit:
 
@@ -208,11 +231,11 @@ class SheetOperation:
             self.bookinfo_sheet.autofit()
 
             # Add to proof sheet.
-            proofid = str(proof_cursor - 1).zfill(3)
+            proofid = str(proof_cursor + proof_delta).zfill(3)
 
             # If donor name repeats.
             if donor == pre_donor:
-                print('-' * 40)
+                print('-' * 60)
                 will_cover = input(
                     f'捐赠证明提示：检测到前一本书的捐赠者也是{donor}，是否合并？(y/n)\n>> ').strip()
                 while will_cover not in ['y', 'n']:
@@ -238,7 +261,7 @@ class SheetOperation:
             self.proof_sheet.autofit()
 
             # Determine whether to continue.
-            print('-' * 40)
+            print('-' * 60)
             choice = input('信息添加完毕！您现在可以输入"quit"以退出，或其他字符以继续。\n>> ').strip()
             if choice == 'quit':
                 quit = True
