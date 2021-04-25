@@ -56,6 +56,8 @@ class SheetOperation:
         # HCI part.
         print('-' * 40)
         title = input('请输入书籍名（不带书名号）：\n>> ').strip()
+        while title == '':
+            title = input('>> ').strip()
 
         # If user wants to quit, give an alert.
         if title == 'quit':
@@ -71,6 +73,8 @@ class SheetOperation:
         # HCI part.
         print('-' * 40)
         author_list = input('请输入作者名，多个作者以空格分隔：\n>> ').strip()
+        while author_list == '':
+            author_list = input('>> ').strip()
 
         # If user wants to quit, give an alert.
         if author_list == 'quit':
@@ -94,6 +98,8 @@ class SheetOperation:
 
         # Get chief category from user.
         chief_cat = input('\n\n>> ').strip()
+        while chief_cat == '':
+            chief_cat = input('>> ').strip()
         if chief_cat == 'quit':
             self.alert_on_quit()
         while chief_cat not in [str(i) for i in range(1, 4)]:
@@ -116,6 +122,8 @@ class SheetOperation:
 
         # Get second category from user.
         second_cat = input('\n>> ').strip()
+        while second_cat == '':
+            second_cat = input('>> ').strip()
         if second_cat == 'quit':
             self.alert_on_quit()
         while second_cat not in [str(i) for i in range(1, len(detail_list) + 1)]:
@@ -132,6 +140,8 @@ class SheetOperation:
         # HCI part.
         print('-' * 40)
         serial_no = input(f'该书的编号前缀为{identifier}，请输入它在该类中的数字编号：\n>> ').strip()
+        while serial_no == '':
+            serial_no = input('>> ').strip()
         if serial_no == 'quit':
             self.alert_on_quit()
         identifier += '-' + serial_no.zfill(2)
@@ -144,6 +154,8 @@ class SheetOperation:
         # HCI part.
         print('-' * 40)
         donor = input('请输入捐赠者姓名：\n>> ').strip()
+        while donor == '':
+            donor = input('>> ').strip()
 
         # If user wants to quit, give an alert.
         if donor == 'quit':
@@ -156,6 +168,8 @@ class SheetOperation:
         # HCI part.
         print('-' * 40)
         comment = input('请输入捐赠留言：\n>> ').strip()
+        while comment == '':
+            comment = input('>> ').strip()
 
         # If user wants to quit, give an alert.
         if comment == 'quit':
