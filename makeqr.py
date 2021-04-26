@@ -21,8 +21,11 @@ class MakeQR:
             'excludeSwitches', ['enable-automation', 'enable-logging'])
 
         # Instantialize chrome explorer.
-        self.chrome = webdriver.Chrome(
-            executable_path='./rsc/chromedriver.exe', chrome_options=option)
+        try:
+            self.chrome = webdriver.Chrome(
+                executable_path='./rsc/chromedriver.exe', chrome_options=option)
+        except Exception as e:
+            print(e)
 
         # Maximize chrome window.
         self.chrome.maximize_window()
@@ -31,7 +34,10 @@ class MakeQR:
         """ Log in.
         """
         # Access log-in page.
-        self.chrome.get(url='https://user.cli.im/login')
+        try:
+            self.chrome.get(url='https://user.cli.im/login')
+        except Exception as e:
+            print(e)
 
         # Fill username frame.
         usrnm = self.chrome.find_element_by_id('loginemail')
@@ -48,15 +54,18 @@ class MakeQR:
     def go_to_template(self):
         """ Go to the batch production template.
         """
-        # Wait till button <批量模板> is ready. Time-out is set to 10 secs.
-        target_a = WebDriverWait(self.chrome, 10, 0.5).until(
+        # Wait till button <批量模板> is ready. Time-out is set to 20 secs.
+        target_a = WebDriverWait(self.chrome, 20, 0.5).until(
             EC.presence_of_element_located(
                 (By.XPATH, '//*[@id="1000200$Menu"]/li[2]/a'))
         )
         target_url = target_a.get_attribute('href')
 
         # Access <批量模板> page.
-        self.chrome.get(target_url)
+        try:
+            self.chrome.get(target_url)
+        except Exception as e:
+            print(e)
 
     def process_dialog(self, filename):
         """ Deal with dialog frame using module "win32gui" and "win32con".
@@ -80,8 +89,8 @@ class MakeQR:
     def upload_bookinfo(self):
         """ Upload file "书籍信息.xlsx".
         """
-        # Wait till button <我已填好Excel，下一步> is ready. Time-out is set to 20 secs.
-        next_step_btn = WebDriverWait(self.chrome, 20, 0.5).until(
+        # Wait till button <我已填好Excel，下一步> is ready. Time-out is set to 30 secs.
+        next_step_btn = WebDriverWait(self.chrome, 30, 0.5).until(
             EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button[2]'))
         )
@@ -102,13 +111,13 @@ class MakeQR:
         sleep(4)
 
         # Open file "书籍信息.xlsx".
-        self.process_dialog('书籍信息.xlsx')
+        self.process_dialog(f'rsc\\书籍信息.xlsx')
 
     def upload_proof(self):
         """ Upload file "捐赠证明.xlsx".
         """
-        # Wait till button <我已填好Excel，下一步> is ready. Time-out is set to 20 secs.
-        next_step_btn = WebDriverWait(self.chrome, 20, 0.5).until(
+        # Wait till button <我已填好Excel，下一步> is ready. Time-out is set to 30 secs.
+        next_step_btn = WebDriverWait(self.chrome, 30, 0.5).until(
             EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button[2]'))
         )
@@ -129,13 +138,13 @@ class MakeQR:
         sleep(4)
 
         # Open file "书籍信息.xlsx".
-        self.process_dialog('捐赠证明.xlsx')
+        self.process_dialog(f'rsc\\捐赠证明.xlsx')
 
     def create_qrcode(self):
         """ Create QR Code.
         """
-        # Wait till button <开始生码> is ready. Time-out is set to 30 secs.
-        start_mkqr_btn = WebDriverWait(self.chrome, 30, 0.5).until(
+        # Wait till button <开始生码> is ready. Time-out is set to 60 secs.
+        start_mkqr_btn = WebDriverWait(self.chrome, 60, 0.5).until(
             EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[4]/button'))
         )
@@ -146,8 +155,8 @@ class MakeQR:
     def download_qrcode(self):
         """ Download QR Code.
         """
-        # Wait till button <下载二维码> is ready. Time-out is set to 30 secs.
-        download_btn = WebDriverWait(self.chrome, 30, 0.5).until(
+        # Wait till button <下载二维码> is ready. Time-out is set to 60 secs.
+        download_btn = WebDriverWait(self.chrome, 60, 0.5).until(
             EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[4]/button[2]'))
         )
@@ -155,8 +164,8 @@ class MakeQR:
         # Click button <下载二维码>.
         download_btn.click()
 
-        # Wait till button <下载> is ready. Time-out is set to 10 secs.
-        final_btn = WebDriverWait(self.chrome, 10, 0.5).until(
+        # Wait till button <下载> is ready. Time-out is set to 20 secs.
+        final_btn = WebDriverWait(self.chrome, 20, 0.5).until(
             EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div[3]/div/div[2]/button[2]'))
         )
@@ -166,8 +175,10 @@ class MakeQR:
 
 
 if __name__ == '__main__':
+    i_username = input('账号>> ').strip()
+    i_password = input('密码>> ').strip()
     mkqr = MakeQR()
-    mkqr.log_in('18962388966', 'siaoca708401')
+    mkqr.log_in(i_username, i_password)
     mkqr.go_to_template()
     mkqr.upload_bookinfo()
     mkqr.create_qrcode()
