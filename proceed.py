@@ -173,7 +173,8 @@ class SheetOperation:
 
         # HCI part.
         print('-' * 60)
-        serial_no = input(f'该书的编号前缀为{identifier}，请输入它在该类中的数字编号：\n>> ').strip()
+        serial_no = input(
+            f'该书类别为"{cat_cn}"({identifier})，请输入它在该类中的数字编号：\n>> ').strip()
 
         # If no response, keep asking.
         while serial_no == '':
@@ -193,7 +194,10 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
-        donor = input('请输入捐赠者姓名：\n>> ').strip()
+        print('请输入捐赠者姓名：', end='')
+        if self.pre_donor != '':
+            print(f'键入"y"可填入上一位捐赠者的名字（{self.pre_donor}）。', end='')
+        donor = input('\n>> ').strip()
 
         # If no response, keep asking.
         while donor == '':
@@ -203,6 +207,10 @@ class SheetOperation:
         if donor == 'quit':
             self.alert_on_quit()
 
+        # If the donor is the same, assign that.
+        elif donor == 'y':
+            donor = self.pre_donor
+
         return donor
 
     def handle_comment(self):
@@ -210,7 +218,10 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
-        comment = input('请输入捐赠留言：\n>> ').strip()
+        print('请输入捐赠留言：', end='')
+        if self.pre_comment != '':
+            print(f'键入"y"可填入上一条留言（{self.pre_comment}）。', end='')
+        comment = input('\n>> ').strip()
 
         # If no response, keep asking.
         while comment == '':
@@ -219,6 +230,10 @@ class SheetOperation:
         # If user wants to quit, raise an alert.
         if comment == 'quit':
             self.alert_on_quit()
+
+        # If comment is the same, assign that.
+        if comment == 'y':
+            comment = self.pre_comment
 
         return comment
 
@@ -229,6 +244,7 @@ class SheetOperation:
         bookinfo_cursor = 2
         proof_cursor = 2
         donor = ''
+        comment = ''
 
         # Start to read in data.
         print('开始读入信息。')
@@ -256,8 +272,9 @@ class SheetOperation:
             title = self.handle_title()
             author = self.handle_author()
             category, bookid = self.handle_identifier()
-            pre_donor = donor
+            self.pre_donor = donor
             donor = self.handle_donor()
+            self.pre_comment = comment
             comment = self.handle_comment()
 
             # Add to bookinfo sheet.
@@ -271,12 +288,12 @@ class SheetOperation:
             proofid = str(proof_cursor + proof_delta).zfill(3)
 
             # If donor's name repeats.
-            if donor == pre_donor:
+            if donor == self.pre_donor:
 
                 # HCI part.
                 print('-' * 60)
                 will_cover = input(
-                    f'捐赠证明提示：检测到前一本书的捐赠者也是{donor}，是否合并？(y/n)\n>> ').strip()
+                    f'检测到前一本书的捐赠者也是{donor}，是否合并捐赠信息？(y/n)\n>> ').strip()
 
                 # If no response, keep asking.
                 while will_cover == '':
