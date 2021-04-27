@@ -51,12 +51,12 @@ class SheetOperation:
         except FileNotFoundError:
             print('\n找不到文件"category.json"，请确认它是否位于/rsc目录下。')
 
-    def alert_on_quit(self):
+    def alert_on_quit(self, question):
         """ Remind user before quit too early.
         """
         # HCI part.
         print('-' * 60)
-        will_quit = input('提前退出会导致当前行信息丢失，确定退出？(y/n)\n>> ').strip()
+        will_quit = input('提前退出会导致当前行的信息丢失，确定退出？(y/n)\n>> ').strip()
 
         # If no response, keep asking.
         while will_quit == '':
@@ -71,6 +71,20 @@ class SheetOperation:
             self.close()
             exit(1)
 
+        # If no, continue to input the answer to the former question.
+        else:
+            print('-' * 60)
+            print(f'请继续输入刚才的{question}：', end='')
+
+            # If the question were about donor and comment, hint user that he could use 'y' to auto-fill.
+            if question == '捐赠者姓名' and self.pre_donor != '':
+                print(f'键入"y"可填入上一位捐赠者的姓名（{self.pre_donor}）。', end='')
+            elif question == '捐赠留言' and self.pre_comment != '':
+                print(f'键入"y"可填入上一条留言（{self.pre_comment}）。', end='')
+
+            regret = input('\n>> ').strip()
+            return regret
+
     def handle_title(self):
         """ Get title info.
         """
@@ -84,7 +98,7 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if title == 'quit':
-            self.alert_on_quit()
+            title = self.alert_on_quit('书籍名')
 
         # Process input.
         if title.find('《') == -1:
@@ -107,7 +121,7 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if author_list == 'quit':
-            self.alert_on_quit()
+            author_list = self.alert_on_quit('作者名')
 
         # Process input.
         author_list = author_list.split()
@@ -131,7 +145,7 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if chief_cat == 'quit':
-            self.alert_on_quit()
+            chief_cat = self.alert_on_quit('一级类别')
 
         # If the input is not in ['1', '2', '3'], re-input.
         while chief_cat not in [str(i) for i in range(1, 4)]:
@@ -157,7 +171,7 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if second_cat == 'quit':
-            self.alert_on_quit()
+            second_cat = self.alert_on_quit('二级标题')
 
         # If the input is not in the range of the detail list, re-input.
         while second_cat not in [str(i) for i in range(1, len(detail_list) + 1)]:
@@ -182,7 +196,7 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if serial_no == 'quit':
-            self.alert_on_quit()
+            serial_no = self.alert_on_quit('数字编号')
 
         # Process input and add to identifier.
         identifier += '-' + serial_no.zfill(2)
@@ -196,7 +210,7 @@ class SheetOperation:
         print('-' * 60)
         print('请输入捐赠者姓名：', end='')
         if self.pre_donor != '':
-            print(f'键入"y"可填入上一位捐赠者的名字（{self.pre_donor}）。', end='')
+            print(f'键入"y"可填入上一位捐赠者的姓名（{self.pre_donor}）。', end='')
         donor = input('\n>> ').strip()
 
         # If no response, keep asking.
@@ -205,10 +219,10 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if donor == 'quit':
-            self.alert_on_quit()
+            donor = self.alert_on_quit('捐赠者姓名')
 
         # If the donor is the same, assign that.
-        elif donor == 'y':
+        if donor == 'y':
             donor = self.pre_donor
 
         return donor
@@ -229,7 +243,7 @@ class SheetOperation:
 
         # If user wants to quit, raise an alert.
         if comment == 'quit':
-            self.alert_on_quit()
+            comment = self.alert_on_quit('捐赠留言')
 
         # If comment is the same, assign that.
         if comment == 'y':
