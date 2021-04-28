@@ -306,22 +306,32 @@ class SheetOperation:
 
                 # HCI part.
                 print('-' * 60)
-                will_cover = input(
+                will_merge = input(
                     f'检测到前一本书的捐赠者也是{donor}，是否合并捐赠信息？(y/n)\n>> ').strip()
 
                 # If no response, keep asking.
-                while will_cover == '':
-                    will_cover = input('>> ').strip()
+                while will_merge == '':
+                    will_merge = input('>> ').strip()
 
                 # If the input is neither 'y' nor 'n', re-input.
-                while will_cover not in ['y', 'n']:
-                    will_cover = input(f'输入错误，请重新选择！(y/n)\n>> ').strip()
+                while will_merge not in ['y', 'n']:
+                    will_merge = input(f'输入错误，请重新选择！(y/n)\n>> ').strip()
 
                 # If yes, move up cursor and merge.
-                if will_cover == 'y':
+                if will_merge == 'y':
                     proof_cursor -= 1
-                    self.proof_sheet.range(
-                        f'B{proof_cursor}').value += f'\n{bookid}'
+
+                    # Calculate current ID of proof.
+                    proofid = str(proof_cursor + proof_delta).zfill(3)
+                    self.proof_sheet.range('A:A').api.NumberFormat = '@'
+
+                    # Check whether this row has identifier.
+                    if self.proof_sheet.range(f'B{proof_cursor}').value is None:
+                        self.proof_sheet.range(f'A{proof_cursor}').value = [
+                            proofid, bookid]
+                    else:
+                        self.proof_sheet.range(
+                            f'B{proof_cursor}').value += f'\n{bookid}'
 
                 # If no, persistence continues.
                 else:
@@ -338,13 +348,38 @@ class SheetOperation:
 
             # Determine whether to continue.
             print('-' * 60)
-            choice = input('信息添加完毕！您现在可以输入"quit"以退出，或其他字符以继续。\n>> ').strip()
+            choice = input(
+                '信息添加完毕！您现在可以：\n- 输入"quit"以退出；\n- 输入"undo"以撤销本行操作；\n- 输入其他任意字符以继续添加信息。\n>> ').strip()
 
             # Quit loop if agreed.
             if choice == 'quit':
                 quit = True
 
-            # Or move down the cursors and restart the loop.
+            # Undo this line if agreed.
+            elif choice == 'undo':
+
+                # Delete this line in bookinfo sheet.
+                self.bookinfo_sheet.range(
+                    f'A{bookinfo_cursor}').expand('right').api.Delete()
+
+                # If the current donor has multiple identifier, delete the last one only.
+                identifier_list = self.proof_sheet.range(
+                    f'B{proof_cursor}').value
+
+                if '\n' in identifier_list:
+                    identifier_list = '\n'.join(
+                        identifier_list.split('\n')[:-1])
+                    self.proof_sheet.range(
+                        f'B{proof_cursor}').value = identifier_list
+
+                # If the donor is a new one, delete the whole row.
+                else:
+                    self.proof_sheet.range(f'A{proof_cursor}').expand(
+                        'right').api.Delete()
+
+                proof_cursor += 1
+
+            # If about to continue, move down the cursors and restart the loop.
             else:
                 bookinfo_cursor += 1
                 proof_cursor += 1
