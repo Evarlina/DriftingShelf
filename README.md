@@ -39,6 +39,17 @@
 
 ## TODO
 
-1.  能够自动点击两个“批量生码”。
-2.  能够用爬虫在网站上（如豆瓣读书）获取书籍的作者。尽量不要用 selenium 模块，用 requests 模块最好，需要速度。
-3.  用 selenium 实现腾讯文档的管理自动化。
+1.  用 selenium 模块自动执行网站上未直接给出源码的JS脚本（如图）。
+
+    >   需要对HTML/JS前端知识有一定了解。
+
+    ![image-20210430150744487](C:\Users\MrCai\AppData\Roaming\Typora\typora-user-images\image-20210430150744487.png)
+
+2.  用 requests 模块实现如下接口：传入书籍名后，在豆瓣读书网上获取书籍的作者。
+
+    >   需要对base64编码、xxHash算法、bplist解析有初步了解。
+
+3.  用 selenium 模块实现腾讯文档的管理自动化。
+
+    >   大概能在CSDN之类的地方找到答案罢（
+
