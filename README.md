@@ -39,17 +39,16 @@
 
 ## TODO
 
-1.  用 selenium 模块自动执行网站上未直接给出源码的JS脚本（如图）。
+1.  用 selenium 模块自动执行网站上未直接给出源码的 JS 脚本（如图）。
 
-    >   需要对HTML/JS前端知识有一定了解。
+    > 需要对 HTML/JS 前端知识有一定了解。
 
-    ![image-20210430150744487](C:\Users\MrCai\AppData\Roaming\Typora\typora-user-images\image-20210430150744487.png)
+    ![href: javascript: ;](C:\Users\MrCai\AppData\Roaming\Typora\typora-user-images\image-20210430150744487.png)
 
 2.  用 requests 模块实现如下接口：传入书籍名后，在豆瓣读书网上获取书籍的作者。
 
-    >   需要对base64编码、xxHash算法、bplist解析有初步了解。
+    > 需要对 base64 编码、xxHash 算法、bplist 解析有初步了解。
 
 3.  用 selenium 模块实现腾讯文档的管理自动化。
 
-    >   大概能在CSDN之类的地方找到答案罢（
-
+    > 大概能在 CSDN 之类的地方找到答案罢（
