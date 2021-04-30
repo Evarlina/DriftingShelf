@@ -306,8 +306,9 @@ class SheetOperation:
 
                 # HCI part.
                 print('-' * 60)
-                will_merge = input(
-                    f'检测到前一本书的捐赠者也是{donor}，是否合并捐赠信息？(y/n)\n>> ').strip()
+                print(f'检测到前一本书的捐赠者也是{donor}，是否合并捐赠信息？(y/n)')
+                print('提示：如果刚刚撤销过该捐赠者的第一条捐赠，也请选择"y"。')
+                will_merge = input('>> ').strip()
 
                 # If no response, keep asking.
                 while will_merge == '':
