@@ -5,6 +5,8 @@ from sys import exit
 
 import xlwings as xw
 
+from query_author import get_author
+
 
 class SheetOperation:
 
@@ -100,6 +102,8 @@ class SheetOperation:
         if title == 'quit':
             title = self.alert_on_quit('书籍名')
 
+        self.recommended_authors = get_author(title)
+
         # Process input.
         if title.find('《') == -1:
             title = '《' + title
@@ -113,6 +117,9 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
+        print('豆瓣读书网找到了下列可能的作者：')
+        for item in self.recommended_authors.items():
+            print(item[0] + '-' * 10 + item[1])
         author_list = input('请输入作者名，多个作者以空格分隔：\n>> ').strip()
 
         # If no response, keep asking.
