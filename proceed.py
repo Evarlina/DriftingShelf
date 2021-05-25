@@ -5,7 +5,7 @@ from sys import exit
 
 import xlwings as xw
 
-from query_author import get_author
+from query_data import get_data
 
 
 class SheetOperation:
@@ -102,7 +102,10 @@ class SheetOperation:
         if title == 'quit':
             title = self.alert_on_quit('书籍名')
 
-        self.recommended_authors = get_author(title)
+        print('-' * 60)
+        print('正在豆瓣读书网查询书籍信息......', end='')
+        self.recommended_authors, self.recommended_tags = get_data(title)
+        print('成功！')
 
         # Process input.
         if title.find('《') == -1:
@@ -117,10 +120,10 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
-        print('豆瓣读书网找到了下列可能的作者：')
+        print('找到了下列可能的作者：')
         for item in self.recommended_authors.items():
             print(item[0] + '-' * 10 + item[1])
-        author_list = input('请输入作者名，多个作者以空格分隔：\n>> ').strip()
+        author_list = input('\n请输入作者名，多个作者以空格分隔：\n>> ').strip()
 
         # If no response, keep asking.
         while author_list == '':
@@ -141,7 +144,9 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
-        print('请选择一级类别：')
+        print('本书最热门的五个标签：')
+        print('、'.join(self.recommended_tags))
+        print('\n请选择一级类别：')
         for item in list(self.category_dic.keys()):
             print(item, end='\t')
         chief_cat = input('\n\n>> ').strip()

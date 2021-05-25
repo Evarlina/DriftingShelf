@@ -180,9 +180,11 @@ if __name__ == '__main__':
     mkqr = MakeQR()
     mkqr.log_in(i_username, i_password)
     mkqr.go_to_template()
+
     mkqr.upload_bookinfo()
     mkqr.create_qrcode()
     mkqr.download_qrcode()
+
     mkqr.upload_proof()
     mkqr.create_qrcode()
     mkqr.download_qrcode()
