@@ -126,23 +126,24 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
-        print('找到了下列可能的作者：')
-        for item in self.recommended_authors.items():
-            print(item[1] + '-' * 10 + item[0])
 
-        author_list = input('\n请输入作者名，多个作者以空格分隔：\n>> ').strip()
+        if len(self.recommended_authors) == 0:
+            print('没有找到可能的作者。')
+
+        else:
+            print('找到了下列可能的作者：')
+            for item in self.recommended_authors.items():
+                print(item[1] + '-' * 10 + item[0])
+
+        author = input('\n请输入作者名，多个作者以"、"分隔：\n>> ').strip()
 
         # If no response, keep asking.
-        while author_list == '':
-            author_list = input('>> ').strip()
+        while author == '':
+            author = input('>> ').strip()
 
         # If user wants to quit, raise an alert.
-        while author_list == 'quit':
-            author_list = self.alert_on_quit('作者名')
-
-        # Process input.
-        author_list = author_list.split()
-        author = '、'.join(author_list)
+        while author == 'quit':
+            author = self.alert_on_quit('作者名')
 
         return author
 
@@ -152,8 +153,13 @@ class SheetOperation:
         """
         # HCI part.
         print('-' * 60)
-        print('本书最热门的五个标签：')
-        print('、'.join(self.recommended_tags))
+
+        if len(self.recommended_tags) == 0:
+            print('没有找到合适的标签。')
+
+        else:
+            print('本书最热门的五个标签：')
+            print('、'.join(self.recommended_tags))
 
         print('\n请选择一级类别：')
         print('\t'.join(list(self.category_dic.keys())))
@@ -267,6 +273,10 @@ class SheetOperation:
         # If user wants to quit, raise an alert.
         while comment == 'quit':
             comment = self.alert_on_quit('捐赠留言')
+
+        # If no comment, comment is empty string.
+        if comment in ['/', '\\', 'None', '无', '空']:
+            comment = ''
 
         # If comment is the same, assign that.
         if comment == 'y':

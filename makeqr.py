@@ -92,7 +92,7 @@ class MakeQR:
         # Wait till button <我已填好Excel，下一步> is ready. Time-out is set to 30 secs.
         next_step_btn = WebDriverWait(self.chrome, 30, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button[2]'))
+                (By.XPATH, '/html/body/div[12]/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button[2]'))
         )
 
         # Click button <我已填好Excel，下一步>.
@@ -101,7 +101,7 @@ class MakeQR:
         # Wait till button <上传Excel> is ready. Time-out is set to 30 secs.
         upload_btn = WebDriverWait(self.chrome, 30, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[2]/div[1]/span/div/span/div/button'))
+                (By.XPATH, '/html/body/div[12]/div/div[2]/div/div[2]/div/div/div[2]/div[1]/span/div/span/div/button'))
         )
 
         # Click button <上传Excel>.
@@ -119,7 +119,7 @@ class MakeQR:
         # Wait till button <我已填好Excel，下一步> is ready. Time-out is set to 30 secs.
         next_step_btn = WebDriverWait(self.chrome, 30, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button[2]'))
+                (By.XPATH, '/html/body/div[12]/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button[2]'))
         )
 
         # Click button <我已填好Excel，下一步>.
@@ -128,7 +128,7 @@ class MakeQR:
         # Wait till button <上传Excel> is ready. Time-out is set to 30 secs.
         upload_btn = WebDriverWait(self.chrome, 30, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[2]/div[1]/span/div/span/div/button'))
+                (By.XPATH, '/html/body/div[12]/div/div[2]/div/div[2]/div/div/div[2]/div[1]/span/div/span/div/button'))
         )
 
         # Click button <上传Excel>.
@@ -146,7 +146,7 @@ class MakeQR:
         # Wait till button <开始生码> is ready. Time-out is set to 60 secs.
         start_mkqr_btn = WebDriverWait(self.chrome, 60, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[4]/button'))
+                (By.XPATH, '/html/body/div[12]/div/div[2]/div/div[2]/div/div/div[4]/button'))
         )
 
         # Click button <开始生码>.
@@ -155,19 +155,19 @@ class MakeQR:
     def download_qrcode(self):
         """ Download QR Code.
         """
-        # Wait till button <下载二维码> is ready. Time-out is set to 60 secs.
-        download_btn = WebDriverWait(self.chrome, 60, 0.5).until(
+        # Wait till button <下载打印二维码> is ready. Time-out is set to 60 secs.
+        confirm_btn = WebDriverWait(self.chrome, 60, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div/div/div[4]/button[2]'))
+                (By.XPATH, '/html/body/div[12]/div/div[2]/div/div[2]/div/div/div[3]/button[1]'))
         )
 
-        # Click button <下载二维码>.
-        download_btn.click()
+        # Click button <下载打印二维码>.
+        confirm_btn.click()
 
         # Wait till button <下载> is ready. Time-out is set to 20 secs.
         final_btn = WebDriverWait(self.chrome, 20, 0.5).until(
             EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[11]/div/div[2]/div/div[2]/div[3]/div/div[2]/button[2]'))
+                (By.XPATH, '/html/body/div[13]/div/div[2]/div/div[2]/div[3]/div/div[2]/button[2]'))
         )
 
         # Click button <下载>.
@@ -188,4 +188,5 @@ if __name__ == '__main__':
     mkqr.upload_proof()
     mkqr.create_qrcode()
     mkqr.download_qrcode()
-    sleep(10)
+
+    sleep(30)
